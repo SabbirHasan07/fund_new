@@ -22,7 +22,7 @@ export default function UnpaidDonorsPage() {
     if (!name || !bkash) return alert('Please fill in all fields.');
     setLoading(true);
 
-    const res = await fetch('/api/admin/unpaid', {
+    const res = await fetch('/api/adminSabbirkasHakha/unpaid', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, bkash }),
