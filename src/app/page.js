@@ -33,7 +33,14 @@ export default function LandingPage() {
             <p className="text-3xl font-bold text-blue-600">{totals.monthly} BDT</p>
           </div>
         </div>
-
+        <div className="flex justify-center">
+          <button
+            onClick={() => window.location.href = '/donate'} // Update with your actual donation route
+            className="mt-4 px-6 py-3 bg-green-600 text-white font-semibold rounded-full shadow hover:bg-green-700 transition"
+          >
+            Donate Now
+          </button>
+        </div>
         {/* Donor List */}
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">✅ Donor List</h2>
@@ -54,6 +61,7 @@ export default function LandingPage() {
         </section>
 
       </div>
+
     </div>
   );
 }

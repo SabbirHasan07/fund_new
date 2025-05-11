@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function DonationForm() {
   const [form, setForm] = useState({
@@ -8,6 +9,7 @@ export default function DonationForm() {
     note: '',
   });
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,19 +19,26 @@ export default function DonationForm() {
     e.preventDefault();
     setLoading(true);
 
-    const res = await fetch('/api/donate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch('/api/donate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
-    setLoading(false);
-    if (res.ok) {
-      alert('✅ Donation submitted successfully!');
-      setForm({ name: '', bkash: '', note: '' });
-    } else {
-      alert('❌ Error submitting donation');
+      const data = await res.json();
+      setLoading(false);
+
+      if (res.ok) {
+        alert('✅ Donation submitted successfully!');
+        setForm({ name: '', bkash: '', note: '' });
+        router.push('/'); // ✅ Navigate to homepage
+      } else {
+        alert('❌ Error submitting donation');
+      }
+    } catch (error) {
+      setLoading(false);
+      alert('❌ Server error');
     }
   };
 
