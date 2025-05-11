@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Donor {
+  id        String   @id @default(cuid())
+  name      String
+  bkash     String
+  note      String?
+  status    String   @default("pending") // pending | paid | in progress
+  amount    Int?     // Only filled when approved
+  createdAt DateTime @default(now())
+}
+
+model UnpaidDonor {
+  id        String   @id @default(cuid())
+  name      String
+  bkash     String
+  status    String   @default("unpaid") // unpaid | in progress
+  createdAt DateTime @default(now())
+}
+
+model Member {
+  id        String   @id @default(cuid())
+  name      String
+  bkash     String
+  date      DateTime
+  status    String   @default("active")
+}
+
+model DonationMeta {
+  id              String @id @default("main")
+  totalDonation   Int
+  monthlyDonation Int
+}
+
+model Notice {
+  id      String @id @default("main")
+  content String
+}
