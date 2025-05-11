@@ -8,7 +8,7 @@ export default function UnpaidDonorsPage() {
   const [loading, setLoading] = useState(false);
 
   const fetchUnpaidDonors = async () => {
-    const res = await fetch('/api/admin/unpaid');
+    const res = await fetch('/api/adminSabbirkasHakha/unpaid');
     const data = await res.json();
     setDonors(data);
   };
