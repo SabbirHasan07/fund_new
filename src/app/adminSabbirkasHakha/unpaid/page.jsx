@@ -8,7 +8,7 @@ export default function UnpaidDonorsPage() {
   const [loading, setLoading] = useState(false);
 
   const fetchUnpaidDonors = async () => {
-    const res = await fetch('/api/adminSabbirkasHakha/unpaid');
+    const res = await fetch('/api/admin/unpaid');
     const data = await res.json();
     setDonors(data);
   };
@@ -22,7 +22,7 @@ export default function UnpaidDonorsPage() {
     if (!name || !bkash) return alert('Please fill in all fields.');
     setLoading(true);
 
-    const res = await fetch('/api/adminSabbirkasHakha/unpaid', {
+    const res = await fetch('/api/admin/unpaid', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, bkash }),

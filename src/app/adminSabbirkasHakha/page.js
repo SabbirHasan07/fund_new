@@ -86,7 +86,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-white text-black py-10 px-4 sm:px-8">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-10">📊 Admin Dashboard</h1>
-      <Link className='bg-red-800 text-white px-4 py-1 mb-9 flex justify-center' href={'/admin/unpaid'}>UNPAID MEMBER</Link>
+      <Link className='bg-red-800 text-white px-4 py-1 mb-9 flex justify-center' href={'/adminSabbirkasHakha/unpaid'}>UNPAID MEMBER</Link>
       <div className="overflow-auto rounded-xl border bg-white shadow-md p-6">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-100">
