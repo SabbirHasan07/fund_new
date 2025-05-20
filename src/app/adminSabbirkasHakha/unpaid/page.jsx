@@ -6,6 +6,7 @@ export default function UnpaidDonorsPage() {
   const [name, setName] = useState('');
   const [bkash, setBkash] = useState('');
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchUnpaidDonors = async () => {
     const res = await fetch('/api/admin/unpaid');
@@ -37,6 +38,27 @@ export default function UnpaidDonorsPage() {
     }
 
     setLoading(false);
+  };
+
+  const handleDelete = async (id) => {
+    const confirm = window.confirm('Are you sure you want to delete this donor?');
+    if (!confirm) return;
+
+    setDeletingId(id);
+
+    const res = await fetch('/api/admin/unpaid', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.ok) {
+      setDonors((prev) => prev.filter((d) => d.id !== id));
+    } else {
+      alert('Failed to delete donor');
+    }
+
+    setDeletingId(null);
   };
 
   return (
@@ -80,6 +102,7 @@ export default function UnpaidDonorsPage() {
               <th className="px-4 py-2 text-left">Bkash</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Created</th>
+              <th className="px-4 py-2 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -87,13 +110,22 @@ export default function UnpaidDonorsPage() {
               <tr key={donor.id} className="border-t">
                 <td className="px-4 py-2">{donor.name}</td>
                 <td className="px-4 py-2">{donor.bkash}</td>
-                <td className="px-4 py-2">{donor.status}</td>
+                <td className="px-4 py-2">{donor.status || 'Pending'}</td>
                 <td className="px-4 py-2">{new Date(donor.createdAt).toLocaleString()}</td>
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() => handleDelete(donor.id)}
+                    className="text-red-600 hover:underline"
+                    disabled={deletingId === donor.id}
+                  >
+                    {deletingId === donor.id ? 'Deleting...' : 'Delete'}
+                  </button>
+                </td>
               </tr>
             ))}
             {donors.length === 0 && (
               <tr>
-                <td colSpan="4" className="text-center py-4 text-gray-500">
+                <td colSpan="5" className="text-center py-4 text-gray-500">
                   No unpaid donors yet.
                 </td>
               </tr>

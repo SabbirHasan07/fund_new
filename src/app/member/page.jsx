@@ -107,73 +107,65 @@ export default function MemberPage() {
                 <td className="px-4 py-2">{donor.bkash}</td>
                 <td className="px-4 py-2 capitalize">{donor.status}</td>
                 <td className="px-4 py-2">
-                  <button
-                    onClick={() => handleApprove(donor.id)}
-                    disabled={loadingId === donor.id || donor.status === 'in progress'}
-                    className={`px-4 py-1 rounded text-white ${donor.status === 'in progress'
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-green-600 hover:bg-green-700'
-                      }`}
-                  >
-                    {loadingId === donor.id ? 'Approving...' : 'Approve'}
-                  </button>
+                  {donor.status === 'approved' ? (
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        if (!form.note) {
+                          setToast({ message: 'Please enter a note', type: 'error' });
+                          return;
+                        }
+                        setLoadingId(donor.id);
+                        const res = await fetch(`/api/unpaidDonors/${donor.id}/note`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ note: form.note }),
+                        });
+                        if (res.ok) {
+                          setForm({ ...form, note: '' });
+                          setToast({ message: '✅ Note submitted', type: 'success' });
+                          await fetchDonors();
+                        } else {
+                          setToast({ message: '❌ Failed to submit note', type: 'error' });
+                        }
+                        setLoadingId(null);
+                      }}
+                      className="flex gap-2 items-center"
+                    >
+                      <input
+                        type="text"
+                        name="note"
+                        placeholder="Enter note"
+                        value={form.note}
+                        onChange={handleChange}
+                        className="border px-2 py-1 rounded"
+                      />
+                      <button
+                        type="submit"
+                        disabled={loadingId === donor.id}
+                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      >
+                        {loadingId === donor.id ? 'Saving...' : 'Submit Note'}
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => handleApprove(donor.id)}
+                      disabled={loadingId === donor.id || donor.status === 'in progress'}
+                      className={`px-4 py-1 rounded text-white ${donor.status === 'in progress'
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-green-600 hover:bg-green-700'
+                        }`}
+                    >
+                      {loadingId === donor.id ? 'Approving...' : 'Approve'}
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
+
         </table>
-      </div>
-
-      <div className="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-8 border border-gray-200">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">📋 Update Information</h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Name</label>
-            <input
-              name="name"
-              type="text"
-              required
-              value={form.name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="Your full name"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Bkash Number</label>
-            <input
-              name="bkash"
-              type="text"
-              required
-              value={form.bkash}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="01XXXXXXXXX"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Note (optional)</label>
-            <textarea
-              name="note"
-              rows={3}
-              value={form.note}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-green-500 outline-none"
-              placeholder="Write a message..."
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition"
-          >
-            {loading ? 'Submitting...' : 'Submit'}
-          </button>
-        </form>
       </div>
     </div>
   );
